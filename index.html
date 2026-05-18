@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunday Planning — Healthcare UX</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="day-label">Sunday Planning</div>
+    <h1>What are we working<br>toward <em>this week?</em></h1>
+    <p class="header-sub">Type your goal and the steps you've already thought through.<br>AI will size each step for low, medium, and high energy evenings.</p>
+  </div>
+
+  <div class="form-section">
+    <div class="field">
+      <label>This week's goal</label>
+      <input type="text" id="goal" placeholder="e.g. Document my T1 Buddy case study from the Healthcare UX course" />
+    </div>
+    <div class="field">
+      <label>Steps to get there</label>
+      <textarea id="steps" placeholder="Write one step per line. As rough as you like."></textarea>
+      <div class="field-hint">Don't overthink this. Just write what you know needs to happen.</div>
+    </div>
+  </div>
+
+  <button class="generate-btn" id="generateBtn" onclick="generateTasks()">
+    Generate this week's tasks →
+  </button>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="loading" id="loading">
+    <span class="loading-dots">Thinking through your week</span>
+  </div>
+
+  <div class="results-header" id="resultsHeader" style="display:none;">Your tasks, sized for each evening</div>
+
+  <div class="results" id="results">
+    <div class="energy-card low">
+      <div class="energy-label"><div class="energy-dot"></div> Low energy evening</div>
+      <div class="energy-task" id="lowTask"></div>
+    </div>
+    <div class="energy-card medium">
+      <div class="energy-label"><div class="energy-dot"></div> Medium energy evening</div>
+      <div class="energy-task" id="medTask"></div>
+    </div>
+    <div class="energy-card high">
+      <div class="energy-label"><div class="energy-dot"></div> High energy evening</div>
+      <div class="energy-task" id="highTask"></div>
+    </div>
+  </div>
+
+  <button class="confirm-btn" id="confirmBtn" onclick="confirmWeek()">
+    Confirm — week is loaded ✓
+  </button>
+
+  <div class="success" id="success">
+    <div class="success-icon">🌿</div>
+    <div class="success-title">Your week is ready.</div>
+    <div class="success-sub">Check in tonight when the email arrives.</div>
+  </div>
+
+  <div class="footer-note">
+    Your tasks are sized for a one-hour evening block.<br>
+    Low energy = small but real. High energy = meaningful progress.
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
