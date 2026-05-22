@@ -3,75 +3,146 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sunday Planning — Healthcare UX</title>
+<title>Weekly Planner — Healthcare UX</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="container">
 
-  <div class="header">
-    <div class="day-label">Sunday Planning</div>
-    <h1>What are we working<br>toward <em>this week?</em></h1>
-    <p class="header-sub">Type your goal and the steps you've already thought through.<br>AI will size each step for low, medium, and high energy evenings.</p>
-  </div>
-
-  <div class="form-section">
-    <div class="field">
-      <label>This week's goal</label>
-      <input type="text" id="goal" placeholder="e.g. Document my T1 Buddy case study from the Healthcare UX course" />
+  <!-- ══ SCREEN 1: Weekend input ══ -->
+  <div id="s-input">
+    <div class="header">
+      <div class="day-label">Weekend Planning</div>
+      <h1>What are we working<br>toward <em>this week?</em></h1>
+      <p class="header-sub">Write your goal and the steps you've already thought through. AI will size each step into low, medium, and high energy tasks.</p>
     </div>
-    <div class="field">
-      <label>Steps to get there</label>
-      <textarea id="steps" placeholder="Write one step per line. As rough as you like."></textarea>
-      <div class="field-hint">Don't overthink this. Just write what you know needs to happen.</div>
+    <div class="form-section">
+      <div class="field">
+        <label>This week's goal</label>
+        <input type="text" id="goal" placeholder="e.g. Create a portfolio case study for T1 Buddy" />
+      </div>
+      <div class="field">
+        <label>Steps to get there</label>
+        <textarea id="steps" placeholder="Write one step per line&#10;&#10;e.g.&#10;Define the narrative arc&#10;Document the research&#10;Capture the prototype"></textarea>
+        <div class="field-hint">One step per line. As rough as you like.</div>
+      </div>
     </div>
-  </div>
-
-  <button class="generate-btn" id="generateBtn" onclick="generateTasks()">
-    Generate this week's tasks →
-  </button>
-
-  <div class="error-msg" id="errorMsg"></div>
-
-  <div class="loading" id="loading">
-    <span class="loading-dots">Thinking through your week</span>
-  </div>
-
-  <div class="results-header" id="resultsHeader" style="display:none;">Your tasks, sized for each evening</div>
-
-  <div class="results" id="results">
-    <div class="energy-card low">
-      <div class="energy-label"><div class="energy-dot"></div> Low energy evening</div>
-      <div class="energy-task" id="lowTask"></div>
-    </div>
-    <div class="energy-card medium">
-      <div class="energy-label"><div class="energy-dot"></div> Medium energy evening</div>
-      <div class="energy-task" id="medTask"></div>
-    </div>
-    <div class="energy-card high">
-      <div class="energy-label"><div class="energy-dot"></div> High energy evening</div>
-      <div class="energy-task" id="highTask"></div>
+    <div class="error-msg" id="errorMsg"></div>
+    <button class="primary-btn" id="generateBtn" onclick="startPlanning()">Generate this week's tasks →</button>
+    <div class="loading" id="loadingInput"><span class="loading-dots">Sizing your tasks</span></div>
+    <div class="footer-note">Low energy = small but real. High energy = step complete.<br><br>
+      <span onclick="loadDemo()" style="color:var(--accent);cursor:pointer;text-decoration:underline;">Try the weeknight flow with sample data →</span>
     </div>
   </div>
 
-  <button class="confirm-btn" id="confirmBtn" onclick="confirmWeek()">
-    Confirm — week is loaded ✓
-  </button>
-
-  <div class="success" id="success">
-    <div class="success-icon">🌿</div>
-    <div class="success-title">Your week is ready.</div>
-    <div class="success-sub">Check in tonight when the email arrives.</div>
+  <!-- ══ SCREEN 2: Review one step at a time ══ -->
+  <div id="s-review" style="display:none;">
+    <div class="header">
+      <div class="step-counter" id="stepCounter">Step 1 of 7</div>
+      <h1 id="stepName" class="step-name"></h1>
+      <p class="header-sub">Edit anything that feels off before confirming.</p>
+    </div>
+    <div class="energy-cards">
+      <div class="energy-card low">
+        <div class="energy-label"><div class="energy-dot"></div> Low energy evening</div>
+        <textarea class="energy-task-edit" id="lowTask"></textarea>
+      </div>
+      <div class="energy-card medium">
+        <div class="energy-label"><div class="energy-dot"></div> Medium energy evening</div>
+        <textarea class="energy-task-edit" id="medTask"></textarea>
+      </div>
+      <div class="energy-card high">
+        <div class="energy-label"><div class="energy-dot"></div> High energy evening</div>
+        <textarea class="energy-task-edit" id="highTask"></textarea>
+      </div>
+    </div>
+    <div class="loading" id="loadingReview"><span class="loading-dots">Sizing next step</span></div>
+    <button class="primary-btn" id="confirmStepBtn" onclick="confirmStep()">Confirm this step →</button>
+    <div class="footer-note">The AI suggestion is a starting point, not a rule.</div>
   </div>
 
-  <div class="footer-note">
-    Your tasks are sized for a one-hour evening block.<br>
-    Low energy = small but real. High energy = meaningful progress.
+  <!-- ══ SCREEN 3: Week loaded success ══ -->
+  <div id="s-success" style="display:none;">
+    <div class="success">
+      <div class="success-icon">🌿</div>
+      <div class="success-title">Your week is ready.</div>
+      <div class="success-sub">Come back tonight when you have an hour.</div>
+    </div>
+    <div class="footer-note" style="margin-top:24px;">
+      <span onclick="loadDemo()" style="color:var(--accent);cursor:pointer;text-decoration:underline;">Demo the weeknight check-in →</span>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 4: Weeknight check-in ══ -->
+  <div id="s-checkin" style="display:none;">
+    <div class="header">
+      <div class="day-label">Goal for the week</div>
+      <h1 id="goalBannerText" class="goal-heading"></h1>
+      <div style="margin-top:28px;" class="day-label">Tonight</div>
+      <h1>How's your <em>energy</em> tonight?</h1>
+    </div>
+    <div class="footer-note" style="margin-bottom:16px; margin-top:-20px; text-align:left;">No right answer. Just be honest.</div>
+    <div class="energy-picker">
+      <div class="energy-option opt-low" onclick="selectEnergy('low')">
+        <div class="energy-option-dot"></div>
+        <div class="energy-option-text">
+          <span class="energy-option-label">Low energy</span>
+          <span class="energy-option-desc">Tired but here. 20–30 min, no decisions.</span>
+        </div>
+      </div>
+      <div class="energy-option opt-mid" onclick="selectEnergy('medium')">
+        <div class="energy-option-dot"></div>
+        <div class="energy-option-text">
+          <span class="energy-option-label">Medium energy</span>
+          <span class="energy-option-desc">Solid hour. Ready to think and make progress.</span>
+        </div>
+      </div>
+      <div class="energy-option opt-high" onclick="selectEnergy('high')">
+        <div class="energy-option-dot"></div>
+        <div class="energy-option-text">
+          <span class="energy-option-label">High energy</span>
+          <span class="energy-option-desc">Firing on all cylinders. Let's go deep.</span>
+        </div>
+      </div>
+    </div>
+    <button class="primary-btn" id="seeTaskBtn" onclick="showTask()" style="opacity:0.4; pointer-events:none;">See tonight's task →</button>
+  </div>
+
+  <!-- ══ SCREEN 5: Tonight's task ══ -->
+  <div id="s-task" style="display:none;">
+    <div class="header">
+      <div class="day-label">Tonight's task</div>
+      <h1>Here's what to <em>do.</em></h1>
+    </div>
+    <div class="tonight-card">
+      <div class="tonight-step-label">Current step</div>
+      <div class="tonight-step-name" id="tonightStepName"></div>
+      <div id="tonightEnergyTag" class="tonight-energy-tag"></div>
+      <div class="tonight-task" id="tonightTask"></div>
+    </div>
+    <div class="footer-note" style="margin-bottom:16px;">One task. One hour. That's enough.</div>
+    <button class="primary-btn" onclick="markDone('move')">Done — ready to move to the next step ✓</button>
+    <button class="secondary-btn" onclick="markDone('stay')">Will need another day</button>
+  </div>
+
+  <!-- ══ SCREEN 6: Good work + Progress ══ -->
+  <div id="s-stepcheck" style="display:none;">
+    <div class="step-check-card">
+      <div class="step-check-icon">✦</div>
+      <div class="step-check-title">Good work tonight.</div>
+      <div class="step-check-sub">That's your hour spent. See your progress below or check in again to keep going.</div>
+    </div>
+    <div style="margin-top: 24px;">
+      <div class="tabs">
+        <button class="tab active" id="tabProgress" onclick="showStepProgress()">Progress</button>
+        <button class="tab" id="tabCheckinAgain" onclick="showCheckin()">Check in again</button>
+      </div>
+      <div id="progressList" class="progress-list"></div>
+    </div>
+    <div class="footer-note">Every night moves the work forward.</div>
   </div>
 
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
