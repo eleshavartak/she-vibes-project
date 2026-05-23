@@ -13,18 +13,24 @@
   <div id="s-input">
     <div class="header">
       <div class="day-label">Weekend Planning</div>
-      <h1>What are we working<br>toward <em>this week?</em></h1>
-      <p class="header-sub">Write your goal and the steps you've already thought through. AI will size each step into low, medium, and high energy tasks.</p>
+      <h1>Here's what we're working<br>toward <em>this week.</em></h1>
+      <p class="header-sub">Your goal and steps are loaded. AI will size each step into low, medium, and high energy tasks.</p>
     </div>
     <div class="form-section">
       <div class="field">
         <label>This week's goal</label>
-        <input type="text" id="goal" placeholder="e.g. Create a portfolio case study for T1 Buddy" />
+        <input type="text" id="goal" readonly value="Create a portfolio case study for T1 Buddy — a Healthcare UX concept prototype" />
       </div>
       <div class="field">
         <label>Steps to get there</label>
-        <textarea id="steps" placeholder="Write one step per line&#10;&#10;e.g.&#10;Define the narrative arc&#10;Document the research&#10;Capture the prototype"></textarea>
-        <div class="field-hint">One step per line. As rough as you like.</div>
+        <textarea id="steps" readonly>Define the narrative arc
+Document the initial research
+Capture solution and prototype
+Document testing and interviews
+Document results and changes to the prototype
+Reflection and next steps
+Assemble project for portfolio upload</textarea>
+        <div class="field-hint">These are your steps for the week. Generate to size each one.</div>
       </div>
     </div>
     <div class="error-msg" id="errorMsg"></div>
