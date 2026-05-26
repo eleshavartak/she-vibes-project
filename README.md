@@ -1,7 +1,3 @@
-Here's the updated README:
-
----
-
 # Weekly Planner
 
 A personal productivity tool that surfaces exactly one right-sized task each weeknight, so your dedicated hour goes toward doing — not deciding.
